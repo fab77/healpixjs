@@ -1,1 +1,1 @@
-# FHiPSWebGL
+# HEALPix porting to Javascript
