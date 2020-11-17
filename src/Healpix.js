@@ -124,7 +124,58 @@ class Healpix{
         return points;
     };
     
-    
+    getBoundariesWithStep(pix, step){
+        var points = new Array(); 
+        var xyf = this.nest2xyf(pix);
+        var dc=0.5/this.nside;
+        var xc=(xyf.ix+0.5)/this.nside; 
+        var yc=(xyf.iy+0.5)/this.nside;
+        var d = 1.0/(this.nside * step);
+
+        for(let i = 0; i < step; i++){
+            points[i]=new Fxyf(xc+dc - i * d, yc+dc, xyf.face).toVec3();
+            points[i + step]=new Fxyf(xc-dc, yc+dc - i * d, xyf.face).toVec3();
+            points[i + 2 * step]=new Fxyf(xc-dc + i * d, yc-dc, xyf.face).toVec3();
+            points[i + 3 * step]=new Fxyf(xc+dc, yc-dc + i * d, xyf.face).toVec3();
+        }
+        return points;
+    };
+
+    get25Points(ipix){
+        let points = this.getBoundariesWithStep(ipix, 4);
+        
+        let face = Math.floor((ipix >> (2 * this.order)));
+        let nside = Math.pow(2, this.order + 2);
+        let npface = nside * nside;
+        let xyf3 = this.ipixNpface2xyf( ipix * 4 * 4 + 3, face, npface);
+        let xyf6 = this.ipixNpface2xyf( ipix * 4 * 4 + 6, face, npface);
+        let xyf9 = this.ipixNpface2xyf( ipix * 4 * 4 + 9, face, npface);
+        let xyf12 = this.ipixNpface2xyf(ipix * 4 * 4 + 12, face, npface);
+       
+        let step = (this.nside*4)
+        
+        let dc=0.5/step;
+        
+        let xc=(xyf3.ix+0.5)/step; 
+        let yc=(xyf3.iy+0.5)/step;
+        points[24]=new Fxyf(xc+dc, yc+dc, xyf3.face).toVec3();
+        points[19]=new Fxyf(xc-dc, yc+dc, xyf3.face).toVec3();
+        points[20]=new Fxyf(xc-dc, yc-dc, xyf3.face).toVec3();
+        points[21]=new Fxyf(xc+dc, yc-dc, xyf3.face).toVec3();
+
+        xc=(xyf12.ix+0.5)/step; 
+        yc=(xyf12.iy+0.5)/step;
+        points[16]=new Fxyf(xc+dc, yc+dc, xyf12.face).toVec3();
+        points[17]=new Fxyf(xc-dc, yc+dc, xyf12.face).toVec3();
+        points[23]=new Fxyf(xc+dc, yc-dc, xyf12.face).toVec3();
+
+        points[22]=new Fxyf((xyf6.ix+0.5)/step+dc, (xyf6.iy+0.5)/step-dc, xyf6.face).toVec3();
+
+        points[18]=new Fxyf((xyf9.ix+0.5)/step-dc, (xyf9.iy+0.5)/step+dc, xyf9.face).toVec3();
+
+        return points;
+    };
+
     neighbours(ipix){
         var result = new Int32Array(8);
         var xyf = this.nest2xyf(ipix);
@@ -194,26 +245,7 @@ class Healpix{
         return result;
     };
     nside2order(nside) {
-        return ((nside&(nside-1))!=0) ? -1 : this.ilog2(nside);
-    };
-    
-    ilog2(arg){
-    //	return Math.max(Math.log2(arg));
-        return 63-this.numberOfLeadingZeros(Math.max(arg,1));
-    };
-    
-    numberOfLeadingZeros(i) {
-        if (i == 0)
-           return 64;
-       var n = 1;
-       var x = (i >>> 32);
-       if (x == 0) { n += 32; x = i; }
-       if (x >>> 16 == 0) { n += 16; x <<= 16; }
-       if (x >>> 24 == 0) { n +=  8; x <<=  8; }
-       if (x >>> 28 == 0) { n +=  4; x <<=  4; }
-       if (x >>> 30 == 0) { n +=  2; x <<=  2; }
-       n -= x >>> 31;
-       return n;
+        return ((nside&(nside-1))!=0) ? -1 : Math.log2(nside);
     };
     
     nest2xyf(ipix) {	
@@ -222,6 +254,13 @@ class Healpix{
         var xyf = new Xyf  (this.compress_bits(pix), this.compress_bits(pix>>1),
                 Math.floor((ipix>>(2*this.order))));
     //	console.log("xyf.ix "+xyf.ix+"xyf.iy "+xyf.iy+"xyf.face "+xyf.face);
+        return xyf;
+    };
+
+    ipixNpface2xyf(ipix, face, npface) {	
+        var pix=Math.floor(ipix&(npface-1));
+        var xyf = new Xyf  (this.compress_bits(pix), this.compress_bits(pix>>1),
+                face);
         return xyf;
     };
     
