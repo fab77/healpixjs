@@ -204,40 +204,22 @@ class Healpix{
         return points;
     };
 
-    get25Points(ipix){
-        let points = this.getBoundariesWithStep(ipix, 4);
-        
-        let face = Math.floor((ipix >> (2 * this.order)));
-        let nside = Math.pow(2, this.order + 2);
-        let npface = nside * nside;
-        let xyf3 = this.ipixNpface2xyf( ipix * 4 * 4 + 3, face, npface);
-        let xyf6 = this.ipixNpface2xyf( ipix * 4 * 4 + 6, face, npface);
-        let xyf9 = this.ipixNpface2xyf( ipix * 4 * 4 + 9, face, npface);
-        let xyf12 = this.ipixNpface2xyf(ipix * 4 * 4 + 12, face, npface);
-       
-        let step = (this.nside*4)
-        
-        let dc=0.5/step;
-        
-        let xc=(xyf3.ix+0.5)/step; 
-        let yc=(xyf3.iy+0.5)/step;
-        points[24]=new Fxyf(xc+dc, yc+dc, xyf3.face).toVec3();
-        points[19]=new Fxyf(xc-dc, yc+dc, xyf3.face).toVec3();
-        points[20]=new Fxyf(xc-dc, yc-dc, xyf3.face).toVec3();
-        points[21]=new Fxyf(xc+dc, yc-dc, xyf3.face).toVec3();
+    getPointsForXyf(x, y, step, face){
+        let nside = step * Math.pow(2, this.order);
+        let points = new Array();
+        let xyf = new Xyf(x , y , face);
 
-        xc=(xyf12.ix+0.5)/step; 
-        yc=(xyf12.iy+0.5)/step;
-        points[16]=new Fxyf(xc+dc, yc+dc, xyf12.face).toVec3();
-        points[17]=new Fxyf(xc-dc, yc+dc, xyf12.face).toVec3();
-        points[23]=new Fxyf(xc+dc, yc-dc, xyf12.face).toVec3();
+        let dc = 0.5 / nside;
+        let xc = (xyf.ix + 0.5) / nside;
+        let yc = (xyf.iy + 0.5) / nside;
 
-        points[22]=new Fxyf((xyf6.ix+0.5)/step+dc, (xyf6.iy+0.5)/step-dc, xyf6.face).toVec3();
-
-        points[18]=new Fxyf((xyf9.ix+0.5)/step-dc, (xyf9.iy+0.5)/step+dc, xyf9.face).toVec3();
+        points[0] = new Fxyf(xc + dc, yc + dc, xyf.face).toVec3();
+        points[1] = new Fxyf(xc - dc, yc + dc, xyf.face).toVec3();
+        points[2] = new Fxyf(xc - dc, yc - dc, xyf.face).toVec3();
+        points[3] = new Fxyf(xc + dc, yc - dc, xyf.face).toVec3();
 
         return points;
-    };
+    }
 
     /** Returns the neighboring pixels of ipix.
     This method works in both RING and NEST schemes, but is
@@ -328,14 +310,7 @@ class Healpix{
     // console.log("xyf.ix "+xyf.ix+"xyf.iy "+xyf.iy+"xyf.face "+xyf.face);
         return xyf;
     };
-
-    ipixNpface2xyf(ipix, face, npface) {	
-        var pix=Math.floor(ipix&(npface-1));
-        var xyf = new Xyf  (this.compress_bits(pix), this.compress_bits(pix>>1),
-                face);
-        return xyf;
-    };
-    
+   
     
     xyf2nest(ix, iy, face_num) {
     // console.log("[xyf2nest] Math.floor(face_num<<(2*this.order)) "
