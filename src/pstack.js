@@ -8,8 +8,8 @@ class pstack{
 	
 	/** Creation from individual components */
 	constructor(sz){
-    	this.p = new BigInt[sz]; 
-		this.o = new UInt32Array[sz];
+    	this.p = new Array(sz); 
+		this.o = new Int32Array(sz);
 		this.s = 0;
 		this.m = 0;
 	};
@@ -19,8 +19,8 @@ class pstack{
 	 * @param o int
 	 */
 	push (p_, o_){ 
-		this.p[s]= p_; 
-		this.o[s]= o_; 
+		this.p[this.s]= p_; 
+		this.o[this.s]= o_; 
 		++this.s;
 	};
 	

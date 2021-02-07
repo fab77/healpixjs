@@ -5,6 +5,9 @@
 "use strict";
 class Vec3{
 	
+	x;
+	y;
+	z;
 	
 	constructor(x, y, z){
 		this.x = x;
@@ -47,12 +50,18 @@ class Vec3{
 	
 	/** Normalize the vector */
 	normalize(){
-	    let d = 1./length();
+	    let d = 1./this.length();
 	    this.x *= d; 
 	    this.y *= d; 
 	    this.z *= d;
 	};
 	
+	/** Return normalized vector */
+	norm() {
+		let d = 1./this.length();
+		return new Vec3(this.x*d, this.y*d, this.z*d);
+	};
+	  
 	/** Vector length
     @return the length of the vector. */
 	length(){ 
@@ -84,6 +93,30 @@ class Vec3{
    @return the vector cross product between this vector and {@code v} */
    	cross(v){ 
    		return new Vec3(this.y*v.z - v.y*this.z, this.z*v.x - v.z*this.x, this.x*v.y - v.x*this.y); 
+   	};
+   	
+   	/** Angle between two vectors.
+    @param v1 another vector
+    @return the angle in radians between this vector and {@code v1};
+      constrained to the range [0,PI]. */
+   	angle(v1) { 
+   		return Math.atan2(this.cross(v1).length(), this.dot(v1)); 
+   	}
+   	
+   	/** Invert the signs of all components */
+    flip() { 
+    	this.x *= -1.0;
+    	this.y *= -1.0;
+    	this.z *= -1.0;
+    }
+   	
+   	static pointing2Vec3(pointing){
+   		let sth = Math.sin(pointing.theta);
+   	    let x = sth * Math.cos(pointing.phi);
+   	    let y = sth * Math.sin(pointing.phi);
+   	    let z = Math.cos(pointing.theta);
+   	    return new Vec3(x, y, z);
+   	    
    	};
 } 
 

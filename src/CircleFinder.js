@@ -20,10 +20,10 @@ class CircleFinder{
 	    }
 	    this.center = point[0].add(point[1]); 
 	    this.center.normalize();
-	    this.cosrad = point[0].dot(center);
-	    for (i=2; i<np; ++i){
+	    this.cosrad = point[0].dot(this.center);
+	    for (let i=2; i<np; ++i){
 	    	if (point[i].dot(this.center)<this.cosrad){ // point outside the current circle
-		        getCircle(point,i);	
+		        this.getCircle(point,i);	
 	    	}
 	    }
 	      
@@ -37,7 +37,7 @@ class CircleFinder{
 		this.center = point[0].add(point[q]); 
 		this.center.normalize();
 		this.cosrad = point[0].dot(this.center);
-		for (i=1; i<q; ++i){
+		for (let i=1; i<q; ++i){
 			if (point[i].dot(this.center)<this.cosrad){ // point outside the current circle
 				this.getCircle2(point,i,q);
 			}
@@ -50,10 +50,10 @@ class CircleFinder{
 	 * @param q2: int
 	 */
 	getCircle2 (point, q1, q2){
-		this.center = point[q1].add(this.point[q2]); 
+		this.center = point[q1].add(point[q2]); 
 		this.center.normalize();
 		this.cosrad = point[q1].dot(this.center);
-		for (i=0; i<q1; ++i){
+		for (let i=0; i<q1; ++i){
 			if (point[i].dot(this.center)<this.cosrad){// point outside the current circle
 	        
 				this.center=(point[q1].sub(point[i])).cross(point[q2].sub(point[i]));

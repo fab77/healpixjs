@@ -133,16 +133,37 @@ class Healpix{
         this.mpr = [];
         this.cmpr = [];
         this.smpr = [];
-        for (let i=0; i <= this.order_max; ++i) {
-        	this.bn[i]=new Healpix(1<<i);
-        	this.mpr[i]=bn[i].maxPixrad();
-        	this.cmpr[i]=Math.cos(mpr[i]);
-        	this.smpr[i]=Math.sin(mpr[i]);
-        }
+        
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+     // TODO INFINITE LOOP!!!!!! FIX ITTTTTTTTTT
+    // Uncaught RangeError: Maximum call stack size exceeded
+        // MOVED TO computeBn()
+//        for (let i=0; i <= this.order_max; ++i) {
+//        	this.bn[i]=new Healpix(1<<i);
+//        	this.mpr[i]=bn[i].maxPixrad();
+//        	this.cmpr[i]=Math.cos(mpr[i]);
+//        	this.smpr[i]=Math.sin(mpr[i]);
+//        }
         
     }
+    
+    
+    computeBn(){
+    	for (let i=0; i <= this.order_max; ++i) {
+        	this.bn[i] = new Healpix(1<<i);
+        	this.mpr[i] = this.bn[i].maxPixrad();
+        	this.cmpr[i] = Math.cos(this.mpr[i]);
+        	this.smpr[i] = Math.sin(this.mpr[i]);
+        }
+    }
+    
     getNPix(){
-    return this.npix;
+    	return this.npix;
     };
     
     
@@ -452,7 +473,7 @@ class Healpix{
       			loc.sth = Math.sqrt(tmp * (2.-tmp)); 
       			loc.have_sth = true; 
       		}
-        } else if (jr>nl3) {
+        } else if (jr>this.nl3) {
         	nr = this.nl4 - jr;
         	let tmp = (nr * nr) * this.fact2;
         	loc.z = tmp - 1;
@@ -560,19 +581,26 @@ class Healpix{
     		console.log("not enough vertices in polygon");
     		return;
     	}
-        let vv = new Vec3[nv];
+//        let vv = new Vec3[nv];
+        let vv = [];
         for (let i=0; i<nv; ++i){
-        	vv[i] = new Vec3(vertex[i].x, vertex[i].y, vertex[i].z);	
+//        	vv[i] = new Vec3(vertex[i].x, vertex[i].y, vertex[i].z);
+        	vv[i] = Vec3.pointing2Vec3(vertex[i]);
         } 
-        let normal = new Vec3[ncirc];
+//        let normal = new Vec3[ncirc];
+        let normal = [];
         let flip=0;
         for (let i=0; i<nv; ++i){
-        	normal[i] = vv[i].cross(vv[(i+1)%nv]).norm();
+        	
+        	let t = vv[(i+1)%nv];
+        	let c = vv[i].cross(t);
+        	normal[i] = c.norm();
+//        	normal[i] = vv[i].cross(vv[(i+1)%nv]).norm();
         	let hnd=normal[i].dot(vv[(i+2)%nv]);
 // HealpixUtils.check(Math.abs(hnd)>1e-10,"degenerate corner");
         	if (!(Math.abs(hnd)>1e-10)){
         		console.log("degenerate corner");
-        		return;
+        		continue;
         	}
         	
         	if (i==0){
@@ -581,13 +609,13 @@ class Healpix{
 // HealpixUtils.check(flip*hnd>0,"polygon is not convex");
         		if (!(flip*hnd>0)){
             		console.log("polygon is not convex");
-            		return;
+            		continue;
             	}
         	} 
           normal[i].scale(flip);
         }
         let rad = new Float32Array(ncirc);
-        rad.fill(Constants.halfpi);
+        rad = rad.fill(Constants.halfpi);
 //!!!        Arrays.fill(rad,Constants.halfpi);
         if (inclusive){
         	let cf = new CircleFinder(vv);
@@ -613,6 +641,8 @@ class Healpix{
 	 * @return RangeSet the requested set of pixel number ranges
 	 */
     queryMultiDisc(norm, rad, fact) {
+    	this.computeBn();
+    	
     	let inclusive = (fact!=0);
         let nv=norm.length;
         // HealpixUtils.check(nv==rad.lengt0,"inconsistent input arrays");
@@ -641,11 +671,14 @@ class Healpix{
 
         // TODO: ignore all disks with radius>=pi
 
-        let crlimit = new Float23Array[omax+1][nv][3];
+//        let crlimit = new Float32Array[omax+1][nv][3];
+        let crlimit = new Array(omax+1);
         for (let o=0; o<=omax; ++o){ // prepare data at the required orders
-            
+        	crlimit[o] = new Array(nv);
         	let dr=this.bn[o].maxPixrad(); // safety distance
             for (let i=0; i<nv; ++i){
+            	
+            	crlimit[o][i] = new Float32Array(3);
             	crlimit[o][i][0] = (rad[i]+dr>Math.PI) ? -1: Math.cos(rad[i]+dr);
             	crlimit[o][i][1] = (o==0) ? Math.cos(rad[i]) : crlimit[0][i][1];
             	crlimit[o][i][2] = (rad[i]-dr<0.) ?  1. : Math.cos(rad[i]-dr);
@@ -706,19 +739,19 @@ class Healpix{
     	    
     	if (zone==0) return;
 
-	    if (o<order) {
+	    if (o<this.order) {
 	    	if (zone>=3) {// output all subpixels
-	    		sdist = 2 * (order-o); // the "bit-shift distance" between map orders
+	    		sdist = 2 * (this.order-o); // the "bit-shift distance" between map orders
     	        pixset.append(pix<<sdist,((pix+1)<<sdist));
 	    	}else {// (zone>=1)
     	        for (let i=0; i<4; ++i){
     	          stk.push(4*pix+3-i,o+1); // add children
     	        }
 	    	}
-	    } else if (o>order) {// this implies that inclusive==true
+	    } else if (o>this.order) {// this implies that inclusive==true
     	      
 	    	if (zone>=2) {// pixel center in shape
-    	        pixset.append(pix>>>(2*(o-order))); // output the parent pixel at order
+    	        pixset.append(pix>>>(2*(o-this.order))); // output the parent pixel at order
     	        stk.popToMark(); // unwind the stack
 	    	} else {// (zone>=1): pixel center in safety range
 	    		if (o<omax) {// check sublevels
@@ -726,7 +759,7 @@ class Healpix{
 	    				stk.push(4*pix+3-i,o+1); // add children
 	    			}
 	    		}else {// at resolution limit
-	    			pixset.append(pix>>>(2*(o-order)));// output the parent pixel at order
+	    			pixset.append(pix>>>(2*(o-this.order)));// output the parent pixel at order
 	    			stk.popToMark(); // unwind the stack
 	    		}
 	    	}
@@ -734,7 +767,7 @@ class Healpix{
 	    	if (zone>=2){
     	        pixset.append(pix);
 	    	} else if (inclusive) {// and (zone>=1)
-	    		if (order<omax) {// check sublevels
+	    		if (this.order<omax) {// check sublevels
 	    			stk.mark(); // remember current stack position
 	    			for (let i=0; i<4; ++i){ // add children in reverse order
 	    				stk.push(4*pix+3-i,o+1); // add children

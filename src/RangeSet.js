@@ -7,7 +7,7 @@ class RangeSet{
 	 */
 	constructor(cap){
 		if (cap<0) console.error("capacity must be positive");
-	    this.r = new Int32Array[cap<<1];
+	    this.r = new Int32Array(cap<<1);
 	    this.sz=0;
 	};
 	
@@ -15,7 +15,7 @@ class RangeSet{
 	/** Append a single-value range to the object.
     @param val value to append */
 	append (val) { 
-		append1(val,val+1); 
+		this.append1(val,val+1); 
 	};
 	
 	
@@ -24,7 +24,7 @@ class RangeSet{
     @param b one-after-last long in range */
 	append1 (a, b) {
 		if (a>=b) return;
-		if ((this.sz>0) && (a<=r[this.sz-1])) {
+		if ((this.sz>0) && (a<=this.r[this.sz-1])) {
 			if (a<this.r[this.sz-2]) console.error("bad append operation");
 			if (b>this.r[this.sz-1]) this.r[this.sz-1]=b;
 			return;
@@ -48,16 +48,17 @@ class RangeSet{
 	 * @param newsize int
 	 */
 	resize(newsize) {
-		if (newsize<sz)  console.error("requested array size too small");
+		if (newsize<this.sz)  console.error("requested array size too small");
 		if (newsize == this.r.length) return;
-		let rnew = new Int32Array[newsize];
-		this.arraycopy(this.r, 0, rnew, 0, this.sz);
-		this.r = rnew;
+		let rnew = new Int32Array(newsize);
+		let sliced = this.r.slice(0, this.sz + 1);
+//		this.arrayCopy(this.r, 0, rnew, 0, this.sz);
+		this.r = sliced;
     };
 	
-	arrayCopy(src, srcIndex, dest, destIndex, length) {
-		dest.splice(destIndex, length, ...src.slice(srcIndex, srcIndex + length));
-	};
+//	arrayCopy(src, srcIndex, dest, destIndex, length) {
+//		dest.splice(destIndex, length, ...src.slice(srcIndex, srcIndex + length));
+//	};
 
   
   
