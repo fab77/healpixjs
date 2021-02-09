@@ -608,7 +608,7 @@ class Healpix{
         	}else{
 // HealpixUtils.check(flip*hnd>0,"polygon is not convex");
         		if (!(flip*hnd>0)){
-            		console.log("polygon is not convex");
+            		console.warn("polygon is not convex");
             		continue;
             	}
         	} 
