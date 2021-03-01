@@ -1,9 +1,9 @@
+"use strict";
 /**
  * Partial porting to Javascript of HealpixBase.java from Healpix3.30
  */
 
 import Fxyf from './Fxyf';
-
 import Hploc from './Hploc';
 import Xyf from './Xyf';
 import Vec3 from './Vec3';
@@ -14,7 +14,7 @@ import pstack from './pstack';
 import Constants from './Constants';
 import RangeSet from './RangeSet';
 
-"use strict";
+
 class Healpix{
 	
 	order_max;
@@ -575,45 +575,107 @@ class Healpix{
     queryPolygonInclusive(vertex, fact){
     	let inclusive = (fact!=0);
         let nv=vertex.length;
-        let ncirc = inclusive ? nv+1 : nv;
-// HealpixUtils.check(nv>=3,"not enough vertices in polygon");
+//        let ncirc = inclusive ? nv+1 : nv;
+
         if (!(nv>=3)){
     		console.log("not enough vertices in polygon");
     		return;
     	}
-//        let vv = new Vec3[nv];
         let vv = [];
         for (let i=0; i<nv; ++i){
-//        	vv[i] = new Vec3(vertex[i].x, vertex[i].y, vertex[i].z);
         	vv[i] = Vec3.pointing2Vec3(vertex[i]);
         } 
-//        let normal = new Vec3[ncirc];
+        
+        
         let normal = [];
         let flip=0;
-        for (let i=0; i<nv; ++i){
+        let index = 0;
+        let back = false;
+        
+        
+        
+        
+        
+        while (index < vv.length){
         	
-        	let t = vv[(i+1)%nv];
-        	let c = vv[i].cross(t);
-        	normal[i] = c.norm();
-//        	normal[i] = vv[i].cross(vv[(i+1)%nv]).norm();
-        	let hnd=normal[i].dot(vv[(i+2)%nv]);
-// HealpixUtils.check(Math.abs(hnd)>1e-10,"degenerate corner");
-        	if (!(Math.abs(hnd)>1e-10)){
-        		console.log("degenerate corner");
-        		continue;
-        	}
+        	let first = vv[index];
+            let medium = null;
+            let last = null;
+            
+			if (index == vv.length - 1) {
+				last = vv[1];
+				medium = vv[0];
+			} else if (index == vv.length - 2) {
+				last = vv[0];
+				medium = vv[index + 1];
+			} else {
+				medium = vv[index + 1];
+				last = vv[index + 2];
+			}
+			
+			normal[index] = first.cross(medium).norm();
+			let hnd = normal[index].dot(last);
+
+//        	if (!(Math.abs(hnd)>1e-10)){
+//        		console.warn("degenerate corner");
+//        		// TODO remove the last vertex
+//        		continue;
+//        	}
         	
-        	if (i==0){
-        		flip = (hnd<0.) ? -1 : 1;  
-        	}else{
-// HealpixUtils.check(flip*hnd>0,"polygon is not convex");
-        		if (!(flip*hnd>0)){
-            		console.warn("polygon is not convex");
-            		continue;
-            	}
-        	} 
-          normal[i].scale(flip);
+        	if (index == 0) {
+				flip = (hnd < 0.) ? -1 : 1;
+
+				let tmp = new Pointing(first);
+//				if (!back){
+//					console.log(index + " Added: " + tmp.theta + ", " + tmp.phi);	
+//				}
+				back = false;
+			} else {
+				let flipThnd = flip * hnd;
+				if (flipThnd < 0) {
+					let tmp = new Pointing(medium);
+//					console.log(index + " Removed: " + tmp.theta + ", " + tmp.phi);
+					vv.splice(index + 1, 1);
+					normal.splice(index, 1);
+					back = true;
+					index -= 1;
+					continue;
+				} else {
+					let tmp = new Pointing(first);
+//					if (!back){
+//						console.log(index + " Added: " + tmp.theta + ", " + tmp.phi);	
+//					}
+					back = false;
+				}
+			}
+
+
+			normal[index].scale(flip);
+			index += 1;
+        	
         }
+        nv=vv.length;
+        let ncirc = inclusive ? nv+1 : nv;
+//        ORIGINAL
+//        for (let i=0; i<nv; ++i){
+//        	
+//        	let t = vv[(i+1)%nv];
+//        	let c = vv[i].cross(t);
+//        	normal[i] = c.norm();
+//        	let hnd=normal[i].dot(vv[(i+2)%nv]);
+//        	if (!(Math.abs(hnd)>1e-10)){
+//        		console.log("degenerate corner");
+//        	}
+//        	
+//        	if (i==0){
+//        		flip = (hnd<0.) ? -1 : 1;  
+//        	}else{
+//        		if (!(flip*hnd>0)){
+//            		console.warn("polygon is not convex");
+//            	}
+//        	} 
+//          normal[i].scale(flip);
+//        }
         let rad = new Float32Array(ncirc);
         rad = rad.fill(Constants.halfpi);
 //!!!        Arrays.fill(rad,Constants.halfpi);
@@ -673,15 +735,17 @@ class Healpix{
 
 //        let crlimit = new Float32Array[omax+1][nv][3];
         let crlimit = new Array(omax+1);
-        for (let o=0; o<=omax; ++o){ // prepare data at the required orders
+        var o;
+        var i;
+        for (o=0; o<=omax; ++o){ // prepare data at the required orders
         	crlimit[o] = new Array(nv);
         	let dr=this.bn[o].maxPixrad(); // safety distance
-            for (let i=0; i<nv; ++i){
+            for (i=0; i<nv; ++i){
             	
-            	crlimit[o][i] = new Float32Array(3);
-            	crlimit[o][i][0] = (rad[i]+dr>Math.PI) ? -1: Math.cos(rad[i]+dr);
-            	crlimit[o][i][1] = (o==0) ? Math.cos(rad[i]) : crlimit[0][i][1];
-            	crlimit[o][i][2] = (rad[i]-dr<0.) ?  1. : Math.cos(rad[i]-dr);
+            	crlimit[o][i] = new Float64Array(3);
+            	crlimit[o][i][0] = (rad[i]+dr>Math.PI) ? -1: Hploc.cos(rad[i]+dr);
+            	crlimit[o][i][1] = (o==0) ? Hploc.cos(rad[i]) : crlimit[0][i][1];
+            	crlimit[o][i][2] = (rad[i]-dr<0.) ?  1. : Hploc.cos(rad[i]-dr);
             }
         }
 
@@ -741,7 +805,7 @@ class Healpix{
 
 	    if (o<this.order) {
 	    	if (zone>=3) {// output all subpixels
-	    		sdist = 2 * (this.order-o); // the "bit-shift distance" between map orders
+	    		let sdist = 2 * (this.order-o); // the "bit-shift distance" between map orders
     	        pixset.append(pix<<sdist,((pix+1)<<sdist));
 	    	}else {// (zone>=1)
     	        for (let i=0; i<4; ++i){
