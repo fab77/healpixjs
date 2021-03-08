@@ -9,17 +9,17 @@
 import Vec3 from './Vec3';
 
 class Hploc{
-	
 	static PI4_A = 0.7853981554508209228515625;
 	static PI4_B = 0.794662735614792836713604629039764404296875e-8;
 	static PI4_C = 0.306161699786838294306516483068750264552437361480769e-16;
 	static M_1_PI = 0.3183098861837906715377675267450287;
 	
-	constructor(ptg){
+	constructor(ptg, mirror){
 		this.PI4_A = 0.7853981554508209228515625;
 		this.PI4_B = 0.794662735614792836713604629039764404296875e-8;
 		this.PI4_C = 0.306161699786838294306516483068750264552437361480769e-16;
 		this.M_1_PI = 0.3183098861837906715377675267450287;
+		this.mirror = mirror;
 		if (undefined != ptg ){
 			if(  !( (ptg.theta>=0.0)&&(ptg.theta<=Math.PI))){
 				console.log("Hploc invalid theta value");
@@ -27,9 +27,9 @@ class Hploc{
 			this.sth = 0.0;
 			this.have_sth=false;
 			this.z = Hploc.cos(ptg.theta);
-			this.phi = ptg.phi;
+			this._phi = ptg.phi;
 			if (Math.abs(this.z)>0.99){
-				this.sth = this.sin(ptg.theta);
+				this.sth = Hploc.sin(ptg.theta);
 				this.have_sth=true;
 			}
 		}
@@ -39,10 +39,18 @@ class Hploc{
 		this.z = z;
 	};
 	
-	setPhi(phi){
-		this.phi = phi;
+	get phi(){
+		if(this.mirror){
+			return -this._phi;
+		} else {
+			return this._phi;
+		}
 	};
-	
+
+	set phi(phi){
+		this._phi = phi;
+	};
+
 	setSth(sth){
 		this.sth = sth;
 	};

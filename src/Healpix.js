@@ -167,7 +167,7 @@ class Healpix{
     };
     
     
-    getBoundaries(pix){
+    getBoundaries(pix, mirror){
         var points = new Array(); 
         var xyf = this.nest2xyf(pix);
     // console.log("PIXEL: "+pix);
@@ -180,10 +180,10 @@ class Healpix{
     // console.log("xc, yc, dc "+xc+","+ yc+","+ dc);
     // console.log("xc+dc-d, yc+dc, xyf.face, d "+(xc+dc) +","+ (yc+dc)+","+
 	// xyf.face+","+ d);
-        points[0]=new Fxyf(xc+dc, yc+dc, xyf.face).toVec3();
-        points[1]=new Fxyf(xc-dc, yc+dc, xyf.face).toVec3();
-        points[2]=new Fxyf(xc-dc, yc-dc, xyf.face).toVec3();
-        points[3]=new Fxyf(xc+dc, yc-dc, xyf.face).toVec3();
+        points[0]=new Fxyf(xc+dc, yc+dc, xyf.face).toVec3(mirror);
+        points[1]=new Fxyf(xc-dc, yc+dc, xyf.face).toVec3(mirror);
+        points[2]=new Fxyf(xc-dc, yc-dc, xyf.face).toVec3(mirror);
+        points[3]=new Fxyf(xc+dc, yc-dc, xyf.face).toVec3(mirror);
     // console.log("Points for npix: "+pix);
     // console.log(points);
     // if (pix > 750){
@@ -208,7 +208,7 @@ class Healpix{
      * @param step the number of returned points is 4*step
      * @return {@link Vec3} for each point
      */
-    getBoundariesWithStep(pix, step){
+    getBoundariesWithStep(pix, step, mirror){
         var points = new Array(); 
         var xyf = this.nest2xyf(pix);
         var dc=0.5/this.nside;
@@ -217,15 +217,15 @@ class Healpix{
         var d = 1.0/(this.nside * step);
 
         for(let i = 0; i < step; i++){
-            points[i]=new Fxyf(xc+dc - i * d, yc+dc, xyf.face).toVec3();
-            points[i + step]=new Fxyf(xc-dc, yc+dc - i * d, xyf.face).toVec3();
-            points[i + 2 * step]=new Fxyf(xc-dc + i * d, yc-dc, xyf.face).toVec3();
-            points[i + 3 * step]=new Fxyf(xc+dc, yc-dc + i * d, xyf.face).toVec3();
+            points[i]=new Fxyf(xc+dc - i * d, yc+dc, xyf.face).toVec3(mirror);
+            points[i + step]=new Fxyf(xc-dc, yc+dc - i * d, xyf.face).toVec3(mirror);
+            points[i + 2 * step]=new Fxyf(xc-dc + i * d, yc-dc, xyf.face).toVec3(mirror);
+            points[i + 3 * step]=new Fxyf(xc+dc, yc-dc + i * d, xyf.face).toVec3(mirror);
         }
         return points;
     };
 
-    getPointsForXyf(x, y, step, face){
+    getPointsForXyf(x, y, step, face, mirror){
         let nside = step * Math.pow(2, this.order);
         let points = new Array();
         let xyf = new Xyf(x , y , face);
@@ -234,10 +234,10 @@ class Healpix{
         let xc = (xyf.ix + 0.5) / nside;
         let yc = (xyf.iy + 0.5) / nside;
 
-        points[0] = new Fxyf(xc + dc, yc + dc, xyf.face).toVec3();
-        points[1] = new Fxyf(xc - dc, yc + dc, xyf.face).toVec3();
-        points[2] = new Fxyf(xc - dc, yc - dc, xyf.face).toVec3();
-        points[3] = new Fxyf(xc + dc, yc - dc, xyf.face).toVec3();
+        points[0] = new Fxyf(xc + dc, yc + dc, xyf.face).toVec3(mirror);
+        points[1] = new Fxyf(xc - dc, yc + dc, xyf.face).toVec3(mirror);
+        points[2] = new Fxyf(xc - dc, yc - dc, xyf.face).toVec3(mirror);
+        points[3] = new Fxyf(xc + dc, yc - dc, xyf.face).toVec3(mirror);
 
         return points;
     }
@@ -447,8 +447,8 @@ class Healpix{
     supplied pixel.
     @param pix long the requested pixel number.
     @return the pixel's center coordinates. */
-    pix2vec(pix) { 
-    	return this.pix2loc(pix).toVec3(); 
+    pix2vec(pix, mirror) { 
+    	return this.pix2loc(pix, mirror).toVec3(); 
     };
 
     
@@ -456,8 +456,8 @@ class Healpix{
      * @param pix long
      * @return Hploc
      */
-    pix2loc (pix){
-    	let loc = new Hploc();
+    pix2loc (pix, mirror){
+    	let loc = new Hploc(undefined, mirror);
 
 
     	let xyf = this.nest2xyf(pix);
@@ -491,6 +491,7 @@ class Healpix{
       		tmp += 8 * nr;
       	}
       	loc.phi = (nr == this.nside) ? 0.75 * Constants.halfpi * tmp * this.fact1 : (0.5 * Constants.halfpi * tmp)/nr;
+      	// loc.setPhi((nr == this.nside) ? 0.75 * Constants.halfpi * tmp * this.fact1 : (0.5 * Constants.halfpi * tmp)/nr);
       	return loc;
     };
     
@@ -509,10 +510,10 @@ class Healpix{
     // }
     // };
     
-    ang2pix(ptg){
+    ang2pix(ptg, mirror){
     // console.log("[ang2pix]");
     // console.log(ptg);
-        return this.loc2pix(new Hploc(ptg));
+        return this.loc2pix(new Hploc(ptg, mirror));
     };
     
     fmodulo(v1, v2){
@@ -572,7 +573,7 @@ class Healpix{
 	 *            choice would be 4.
 	 * @return the requested set of pixel number ranges
 	 */
-    queryPolygonInclusive(vertex, fact){
+    queryPolygonInclusive(vertex, fact, mirror){
     	let inclusive = (fact!=0);
         let nv=vertex.length;
 //        let ncirc = inclusive ? nv+1 : nv;
@@ -684,7 +685,7 @@ class Healpix{
         	normal[nv] = cf.getCenter();
         	rad[nv] = Math.acos(cf.getCosrad());
         }
-        return this.queryMultiDisc(normal, rad, fact);
+        return this.queryMultiDisc(normal, rad, fact, mirror);
 
     };
     
@@ -702,7 +703,7 @@ class Healpix{
 	 *            choice would be 4.
 	 * @return RangeSet the requested set of pixel number ranges
 	 */
-    queryMultiDisc(norm, rad, fact) {
+    queryMultiDisc(norm, rad, fact, mirror) {
     	this.computeBn();
     	
     	let inclusive = (fact!=0);
@@ -761,7 +762,7 @@ class Healpix{
             let o = stk.otop();
             stk.pop();
 
-            let pv = this.bn[o].pix2vec(pix);
+            let pv = this.bn[o].pix2vec(pix, mirror);
 
             let zone = 3;
             for (let i=0; (i<nv)&&(zone>0); ++i) {

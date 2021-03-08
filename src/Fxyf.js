@@ -16,8 +16,8 @@ class Fxyf{
 		this.halfpi = Math.PI/2.;
 	}
 
-	toHploc(){	
-		var loc = new Hploc();
+	toHploc(mirror){	
+		var loc = new Hploc(undefined, mirror);
 		
 		var jr = this.jrll[this.face] - this.fx - this.fy;
 	//	console.log("JR: "+jr+" fx: "+this.fx+" fy: "+this.fy);
@@ -55,13 +55,14 @@ class Fxyf{
 			tmp -= 8;
 		}
 		loc.phi = (nr<1e-15) ? 0 : (0.5*this.halfpi*tmp)/nr;
+		// loc.setPhi((nr<1e-15) ? 0 : (0.5*this.halfpi*tmp)/nr);
 	//    console.log(loc);
 		return loc;
 	};
 	
 	
-	toVec3(){ 
-		return this.toHploc().toVec3(); 
+	toVec3(mirror){ 
+		return this.toHploc(mirror).toVec3(); 
 	};
 }
 
