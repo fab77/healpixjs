@@ -5,13 +5,9 @@
 
 "use strict";
 class Pointing{
-	constructor(vec3, mirror){
+	constructor(vec3){
 	    this.theta = Math.atan2(Math.sqrt(vec3.x*vec3.x+vec3.y*vec3.y),vec3.z);
-		if(mirror){
-			this.phi = -Math.atan2 (vec3.y,vec3.x);
-		} else {
-			this.phi = Math.atan2 (vec3.y,vec3.x);
-		}
+		this.phi = Math.atan2 (vec3.y,vec3.x);
 
 	    if (this.phi<0.0){
 	    	this.phi = this.phi + 2*Math.PI;
