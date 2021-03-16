@@ -18,6 +18,7 @@ class Pointing{
 				this.phi = Hploc.atan2 (vec3.y,vec3.x);
 			}
 
+
 		    if (this.phi<0.0){
 		    	this.phi = this.phi + 2*Math.PI;
 		    }
@@ -34,7 +35,3 @@ class Pointing{
 }
 
 export default Pointing;
-//function Pointing( theta,  phi){
-//	this.theta = theta; 
-//	this.phi = phi; 
-//}

@@ -14,12 +14,11 @@ class Hploc{
 	static PI4_C = 0.306161699786838294306516483068750264552437361480769e-16;
 	static M_1_PI = 0.3183098861837906715377675267450287;
 	
-	constructor(ptg, mirror){
+	constructor(ptg){
 		this.PI4_A = 0.7853981554508209228515625;
 		this.PI4_B = 0.794662735614792836713604629039764404296875e-8;
 		this.PI4_C = 0.306161699786838294306516483068750264552437361480769e-16;
 		this.M_1_PI = 0.3183098861837906715377675267450287;
-		this.mirror = mirror;
 		if (undefined != ptg ){
 //			if(  !( (ptg.theta>=0.0)&&(ptg.theta<=Math.PI))){
 //				console.warn("Hploc invalid theta value"+ ptg.theta);
@@ -41,11 +40,7 @@ class Hploc{
 	};
 	
 	get phi(){
-		if(this.mirror){
-			return -this._phi;
-		} else {
-			return this._phi;
-		}
+		return this._phi;
 	};
 
 	set phi(phi){
