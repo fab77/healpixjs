@@ -157,8 +157,8 @@ class Healpix{
     	for (let i=0; i <= this.order_max; ++i) {
         	this.bn[i] = new Healpix(1<<i);
         	this.mpr[i] = this.bn[i].maxPixrad();
-        	this.cmpr[i] = Math.cos(this.mpr[i]);
-        	this.smpr[i] = Math.sin(this.mpr[i]);
+        	this.cmpr[i] = Hploc.cos(this.mpr[i]);
+        	this.smpr[i] = Hploc.sin(this.mpr[i]);
         }
     }
     
@@ -325,60 +325,17 @@ class Healpix{
     
     nest2xyf(ipix) {	
         var pix=Math.floor(ipix&(this.npface-1));
-    // console.log("nest2xyf "+pix);
         var xyf = new Xyf  (this.compress_bits(pix), this.compress_bits(pix>>1),
                 Math.floor((ipix>>(2*this.order))));
-    // console.log("xyf.ix "+xyf.ix+"xyf.iy "+xyf.iy+"xyf.face "+xyf.face);
         return xyf;
     };
    
     
     xyf2nest(ix, iy, face_num) {
-    // console.log("[xyf2nest] Math.floor(face_num<<(2*this.order)) "
-	// +Math.floor(face_num<<(2*this.order)));
-    // console.log("[xyf2nest] this.spread_bits(ix) "
-	// +Math.floor(this.spread_bits(ix)));
-    // console.log("[xyf2nest] this.spread_bits(iy)<<1 "
-	// +Math.floor(this.spread_bits(iy)<<1));
-        
+
         return Math.floor(face_num<<(2*this.order)) 
         + this.spread_bits(ix) + (this.spread_bits(iy)<<1); 
     };
-    
-    // loc2pix(z, phi, sth, have_sth){
-    // "use strict;"
-    // var za = Math.abs(z);
-    // var tt = this.fmodulo(phi*this.inv_halfpi, 4.0);// in [0,4)
-    // if (za<=this.twothird){ // Equatorial region
-    // var temp1 = this.nside*(0.5+tt);
-    // var temp2 = this.nside*(z*0.75);
-    // var jp = Math.floor(temp1-temp2); // index of ascending edge line
-    // var jm = Math.floor(temp1+temp2); // index of descending edge line
-    // var ifp = jp >> this.order; // in {0,4}
-    // var ifm = jm >> this.order;
-    // var face_num = Math.floor((ifp==ifm) ? (ifp|4) : ((ifp<ifm) ? ifp :
-	// (ifm+8)));
-    // var ix = Math.floor(jm & (this.nside-1));
-    // var iy = Math.floor(this.nside - (jp & (this.nside-1)) - 1);
-    // return this.xyf2nest(ix,iy,face_num);
-    // }else{ // polar region, za > 2/3
-    // var ntt = Math.min(3,Math.floor(tt));
-    // var tp = tt-ntt;
-    // var tmp = ((za<0.99)||(!have_sth)) ?
-    // this.nside*Math.sqrt(3*(1-za)) :
-    // this.nside*sth/Math.sqrt((1.0+za)/3.0);
-    // var jp = Math.floor(tp*tmp); // increasing edge line index
-    // var jm = Math.floor((1.0-tp)*tmp); // decreasing edge line index
-    // jp=Math.min(jp,this.nside-1); // for points too close to the boundary
-    // jm=Math.min(jm,this.nside-1);
-    // if (z>=0){
-    // pixNo = this.xyf2nest(Math.floor(this.nside-jm
-	// -1),Math.floor(this.nside-jp-1),ntt);
-    // }else{
-    // pixNo = this.xyf2nest(Math.floor(jp), Math.floor(jm), ntt+8);
-    // }
-    // }
-    // };
     
     loc2pix(hploc){
         var z=hploc.z;
@@ -388,7 +345,6 @@ class Healpix{
         var tt = this.fmodulo((phi*this.inv_halfpi),4.0);// in [0,4)
         var pixNo;
         if (za<=this.twothird) {// Equatorial region
-    // console.log("[loc2pix] equatorial");
             var temp1 = this.nside*(0.5+tt);
             var temp2 = this.nside*(z*0.75);
             var jp = Math.floor(temp1-temp2); // index of ascending edge line
@@ -399,9 +355,7 @@ class Healpix{
             var ix = Math.floor(jm & (this.nside-1));
             var iy = Math.floor(this.nside - (jp & (this.nside-1)) - 1);
             pixNo = this.xyf2nest(ix, iy, face_num);
-    // console.log("[loc2pix] PIXNO: "+pixNo);
         }else { // polar region, za > 2/3
-    // console.log("[loc2pix] polar");
             var ntt = Math.min(3,Math.floor(tt));
             var tp = tt-ntt;
             var tmp = ((za<0.99)||(!hploc.have_sth)) ?
@@ -415,30 +369,14 @@ class Healpix{
             if (jm>=this.nside){
                 jm = this.nside-1;
             }
-    // console.log("tt "+tt+"ntt "+ntt+" tp "+tp+" tmp "+tmp+" jp "+jp+" jm
-	// "+jm);
+
             if (z>=0){
-    // console.log("[loc2pix] z>=0");
-    // console.log("[loc2pix] this.nside "+this.nside);
-    // console.log("[loc2pix] jm "+jm);
-    // console.log("[loc2pix] jp "+jp);
-    // console.log("[loc2pix] jp "+ntt);
-    //	    	
-    // console.log("[loc2pix] Math.floor(this.nside-jm -1)
-	// "+Math.floor(this.nside-jm -1));
-    // console.log("[loc2pix] Math.floor(this.nside-jp-1)
-	// "+Math.floor(this.nside-jp-1));
                 pixNo = this.xyf2nest(Math.floor(this.nside-jm -1),Math.floor(this.nside-jp-1),ntt);
             }else{
-    // console.log("[loc2pix] z<0");
                 pixNo = this.xyf2nest(Math.floor(jp), Math.floor(jm), ntt+8);
             }
-    // console.log("[loc2pix] PIXNO "+pixNo);
-    // return (z>=0) ? this.xyf2nest(this.nside-jm -1,this.nside-jp-1,ntt) :
-	// this.xyf2nest(jp, jm, ntt+8);
             
         }
-    // console.log("PIX: "+pixNo);
         return pixNo;
     };
     
@@ -495,24 +433,7 @@ class Healpix{
       	return loc;
     };
     
-    // ang2pix(ptg){
-    // var pi_=3.141592653589793238462643383279502884197;
-    // if ( !((ptg.theta>=0)&&(ptg.theta<=pi_)) ){
-    //		
-    // console.log("invalid theta value");
-    // return;
-    // }
-    // if ((ptg.theta<0.01) || (ptg.theta > 3.14159-0.01)){
-    // return
-	// this.loc2pix(Math.cos(ptg.theta),ptg.phi,Math.sin(ptg.theta),true);
-    // }else{
-    // return this.loc2pix(Math.cos(ptg.theta),ptg.phi,0.0,false)
-    // }
-    // };
-    
     ang2pix(ptg, mirror){
-    // console.log("[ang2pix]");
-    // console.log(ptg);
         return this.loc2pix(new Hploc(ptg, mirror));
     };
     
@@ -523,18 +444,7 @@ class Healpix{
         var tmp=v1%v2+v2;
         return (tmp===v2) ? 0.0 : tmp;
     };
-    
-    // compress_bits(v){
-    // var raw = Math.floor((v & 0x5555555555555555));
-    // raw = Math.floor(raw | (raw >>> 15));
-    // var raw1 = Math.floor(raw&0xffff);
-    // var raw2 = Math.floor((raw>>>32)&0xffff);
-    // return Math.floor(this.ctab[raw1&0xff] | (this.ctab[raw1>>>8]<< 4)
-    // | (this.ctab[raw2&0xff]<<16) | (this.ctab[raw2>>>8]<<20));
-    // // var compressed = this.ctab[raw & 0xff] | (this.ctab[raw >>> 8] << 4);
-    // // return compressed;
-    // };
-    
+
     compress_bits(v){    
         var raw        = Math.floor((v & 0x5555)) | Math.floor(((v & 0x55550000) >>> 15));
         var compressed = this.ctab[raw & 0xff] | (this.	ctab[raw >>> 8] << 4);
@@ -543,13 +453,8 @@ class Healpix{
     
     
     spread_bits(v){
-    // return Math.floor(this.utab[v&0xff]) |
-	// Math.floor((this.utab[(v>>>8)&0xff]<<16));
-        
         return Math.floor(this.utab[v & 0xff]) | Math.floor((this.utab[(v>>> 8)&0xff]<<16)) 
         | Math.floor((this.utab[(v>>>16)&0xff]<<32))| Math.floor((this.utab[(v>>>24)&0xff]<<48));
-    // return this.utab[ v&0xff] | (this.utab[(v>>8)&0xff])<<16
-    // | (this.utab[(v>>16)&0xff])<<32 | (this.utab[(v>>24)&0xff])<<48;
     };
     
     
@@ -635,7 +540,6 @@ class Healpix{
 				let flipThnd = flip * hnd;
 				if (flipThnd < 0) {
 					let tmp = new Pointing(medium);
-//					console.log(index + " Removed: " + tmp.theta + ", " + tmp.phi);
 					vv.splice(index + 1, 1);
 					normal.splice(index, 1);
 					back = true;
@@ -643,9 +547,6 @@ class Healpix{
 					continue;
 				} else {
 					let tmp = new Pointing(first);
-//					if (!back){
-//						console.log(index + " Added: " + tmp.theta + ", " + tmp.phi);	
-//					}
 					back = false;
 				}
 			}
@@ -657,33 +558,17 @@ class Healpix{
         }
         nv=vv.length;
         let ncirc = inclusive ? nv+1 : nv;
-//        ORIGINAL
-//        for (let i=0; i<nv; ++i){
-//        	
-//        	let t = vv[(i+1)%nv];
-//        	let c = vv[i].cross(t);
-//        	normal[i] = c.norm();
-//        	let hnd=normal[i].dot(vv[(i+2)%nv]);
-//        	if (!(Math.abs(hnd)>1e-10)){
-//        		console.log("degenerate corner");
-//        	}
-//        	
-//        	if (i==0){
-//        		flip = (hnd<0.) ? -1 : 1;  
-//        	}else{
-//        		if (!(flip*hnd>0)){
-//            		console.warn("polygon is not convex");
-//            	}
-//        	} 
-//          normal[i].scale(flip);
-//        }
-        let rad = new Float32Array(ncirc);
+
+        let rad = new Array(ncirc);
         rad = rad.fill(Constants.halfpi);
-//!!!        Arrays.fill(rad,Constants.halfpi);
+//        rad = rad.fill(1.5707963267948966);
+//        let p = "1.5707963267948966";
+//        rad = rad.fill(parseFloat(p));
+        
         if (inclusive){
         	let cf = new CircleFinder(vv);
         	normal[nv] = cf.getCenter();
-        	rad[nv] = Math.acos(cf.getCosrad());
+        	rad[nv] = Hploc.acos(cf.getCosrad());
         }
         return this.queryMultiDisc(normal, rad, fact, mirror);
 
@@ -714,15 +599,13 @@ class Healpix{
         	return;
         }
         
-        let res = new RangeSet(4);
+        let res = new RangeSet(4<<1);
         // Removed code for Scheme.RING
         let oplus = 0;
         if (inclusive) {
-//!!!            HealpixUtils.check ((1L<<(order_max-order))>=fact, "invalid oversampling factor");
 			if (!(Math.pow(2, this.order_max-this.order)>=fact)){
 				console.error("invalid oversampling factor");
 			}
-//!!!            HealpixUtils.check ((fact&(fact-1))==0, "oversampling factor must be a power of 2");
 			if (!((fact&(fact-1))==0)){
 				console.error("oversampling factor must be a power of 2");
 			}
@@ -873,8 +756,8 @@ class Healpix{
     convertZphi2xyz(zphi){
     	
     	let sth = Math.sqrt((1.0-zphi.z)*(1.0+zphi.z));
-        let x=sth*Math.cos(zphi.phi);
-        let y=sth*Math.sin(zphi.phi);
+        let x=sth*Hploc.cos(zphi.phi);
+        let y=sth*Hploc.sin(zphi.phi);
         let z=zphi.z;
         return [x, y, z];
     	

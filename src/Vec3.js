@@ -2,6 +2,8 @@
  * Partial porting to Javascript of Vec3.java from Healpix3.30  
  */
 
+import Hploc from './Hploc';
+
 "use strict";
 class Vec3{
 	
@@ -100,7 +102,7 @@ class Vec3{
     @return the angle in radians between this vector and {@code v1};
       constrained to the range [0,PI]. */
    	angle(v1) { 
-   		return Math.atan2(this.cross(v1).length(), this.dot(v1)); 
+   		return Hploc.atan2(this.cross(v1).length(), this.dot(v1)); 
    	}
    	
    	/** Invert the signs of all components */
@@ -111,10 +113,10 @@ class Vec3{
     }
    	
    	static pointing2Vec3(pointing){
-   		let sth = Math.sin(pointing.theta);
-   	    let x = sth * Math.cos(pointing.phi);
-   	    let y = sth * Math.sin(pointing.phi);
-   	    let z = Math.cos(pointing.theta);
+   		let sth = Hploc.sin(pointing.theta);
+   	    let x = sth * Hploc.cos(pointing.phi);
+   	    let y = sth * Hploc.sin(pointing.phi);
+   	    let z = Hploc.cos(pointing.theta);
    	    return new Vec3(x, y, z);
    	    
    	};
