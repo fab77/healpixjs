@@ -498,11 +498,7 @@ class Healpix{
         let flip=0;
         let index = 0;
         let back = false;
-        
-        
-        
-        
-        
+
         while (index < vv.length){
         	
         	let first = vv[index];
@@ -522,20 +518,11 @@ class Healpix{
 			
 			normal[index] = first.cross(medium).norm();
 			let hnd = normal[index].dot(last);
-
-//        	if (!(Math.abs(hnd)>1e-10)){
-//        		console.warn("degenerate corner");
-//        		// TODO remove the last vertex
-//        		continue;
-//        	}
         	
         	if (index == 0) {
 				flip = (hnd < 0.) ? -1 : 1;
 
 				let tmp = new Pointing(first);
-//				if (!back){
-//					console.log(index + " Added: " + tmp.theta + ", " + tmp.phi);	
-//				}
 				back = false;
 			} else {
 				let flipThnd = flip * hnd;
