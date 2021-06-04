@@ -126,15 +126,17 @@ class Hploc{
 	};
 	
 	static copySign(magnitude, sign){
-		let finalsign = 1;
-		if (Object.is(finalsign , -0)){
-			sign = -1;
-		}else if (Object.is(finalsign , 0)){
-			sign = 1;
-		}else {
-			sign = Math.sign(finalsign);
-		}
-		return finalsign * magnitude;
+
+		return sign < 0 ? -Math.abs(magnitude) : Math.abs(magnitude);
+		// let finalsign = 1;
+		// if (Object.is(finalsign , -0)){
+		// 	sign = -1;
+		// }else if (Object.is(finalsign , 0)){
+		// 	sign = 1;
+		// }else {
+		// 	sign = Math.sign(finalsign);
+		// }
+		// return finalsign * magnitude;
 	}
 	
 	static atanhelper(s){

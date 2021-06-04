@@ -753,5 +753,4 @@ class Healpix{
 } 
 
 export default Healpix;
-
-export {Vec3, Pointing};
+export {Hploc, Vec3, Pointing};

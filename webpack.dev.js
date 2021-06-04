@@ -7,7 +7,7 @@ module.exports = [
   entry: './src/Healpix.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'healpix.js',
+    // filename: 'healpix.js',
     library: 'healpix',
   },
   devtool,
