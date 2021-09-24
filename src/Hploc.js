@@ -7,6 +7,7 @@
 "use strict";
 
 import Vec3 from './Vec3';
+import Zphi from './Zphi';
 
 class Hploc{
 	static PI4_A = 0.7853981554508209228515625;
@@ -57,6 +58,11 @@ class Hploc{
 	//	var vector = new Vec3(st*Math.cos(this.phi),st*Math.sin(this.phi),this.z);
 		return vector;
 	};
+
+	toZphi() { 
+		return new Zphi(this.z, this.phi); 
+	}
+
 	
 	static sin(d){
 		

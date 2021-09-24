@@ -29,8 +29,15 @@ class RangeSet{
 			if (b>this.r[this.sz-1]) this.r[this.sz-1]=b;
 			return;
 		}
-		this.ensureCapacity(this.sz+2);
-
+		// this.ensureCapacity(this.sz+2);
+		let cap = this.sz+2;
+		if (this.r.length < cap) {
+			let newsize = Math.max( 2 * this.r.length,cap);
+			let rnew = new Int32Array(newsize);
+			rnew.set(this.r);
+			this.r = rnew;
+		}
+		
 		this.r[this.sz] = a;
 		this.r[this.sz+1] = b;
 		this.sz+=2;

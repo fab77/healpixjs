@@ -113,8 +113,8 @@ class Healpix{
                                     new Int16Array([ 6,0,0 ]),// NW
                                     new Int16Array([ 3,0,0 ])// N
                                     ];
-        if (nside_in<=this.ns_max && nside_in>0){
-            this.nside=nside_in;
+        if (nside_in <= this.ns_max && nside_in > 0){
+            this.nside = nside_in;
             this.npface = this.nside*this.nside;
             this.npix = 12*this.npface;
             this.order = this.nside2order(this.nside);
@@ -320,7 +320,7 @@ class Healpix{
         return result;
     };
     nside2order(nside) {
-        return ((nside&(nside-1))!=0) ? -1 : Math.log2(nside);
+        return ((nside & (nside-1)) !=0 ) ? -1 : Math.log2(nside);
     };
     
     nest2xyf(ipix) {	
@@ -388,6 +388,13 @@ class Healpix{
     pix2vec(pix) { 
     	return this.pix2loc(pix).toVec3(); 
     };
+
+     /** Returns the Zphi corresponding to the center of the supplied pixel.
+      @param pix the requested pixel number.
+      @return the pixel's center coordinates. */
+    pix2zphi (pix) { 
+        return this.pix2loc(pix).toZphi(); 
+    }
 
     
     /**
@@ -661,6 +668,11 @@ class Healpix{
     	return 31-Math.clz32(max);
     };
     
+    /** Computes the cosine of the angular distance between two z, phi positions
+      on the unit sphere. */
+    cosdist_zphi (z1, phi1, z2, phi2) {
+        return z1 * z2 + Hploc.cos(phi1-phi2) * Math.sqrt((1.0-z1*z1)*(1.0-z2*z2));
+    }
     
     /**
      * @param int o
@@ -750,6 +762,76 @@ class Healpix{
         return [x, y, z];
     	
     };
+
+    /** Returns a range set of pixels which overlap with a given disk. <p>
+      This method is more efficient in the RING scheme. <p>
+      This method may return some pixels which don't overlap with
+      the polygon at all. The higher {@code fact} is chosen, the fewer false
+      positives are returned, at the cost of increased run time.
+      @param ptg the angular coordinates of the disk center
+      @param radius the radius (in radians) of the disk
+      @param fact The overlapping test will be done at the resolution
+        {@code fact*nside}. For NESTED ordering, {@code fact} must be a power
+        of 2, else it can be any positive integer. A typical choice would be 4.
+      @return the requested set of pixel number ranges  */
+    queryDiscInclusive(ptg, radius, fact) {
+        this.computeBn();
+        let inclusive = (fact!=0);
+        let pixset = new RangeSet();
+
+        if (radius>=Math.PI) {// disk covers the whole sphere
+            pixset.append(0,npix); return pixset; 
+        }
+
+        let oplus=0;
+        if (inclusive) {
+            // HealpixUtils.check ((1L<<order_max)>=fact,"invalid oversampling factor");
+
+            if (!(fact & (fact-1)) == 0 ) {
+                console.error("oversampling factor must be a power of 2");
+            }
+            oplus = this.ilog2(fact);
+        }
+        
+        let omax = Math.min(this.order_max, this.order + oplus); // the order up to which we test
+        let vptg = Vec3.pointing2Vec3(ptg);
+        let crpdr = new Array(omax+1);
+        let crmdr = new Array(omax+1);
+
+        let cosrad = Hploc.cos(radius);
+        let sinrad = Hploc.sin(radius);
+        for (let o=0; o<=omax; o++) {// prepare data at the required orders
+      
+            let dr = this.mpr[o]; // safety distance
+            let cdr = this.cmpr[o];
+            let sdr = this.smpr[o];
+            crpdr[o] = (radius + dr > Math.PI) ? -1. : cosrad * cdr - sinrad * sdr;
+            crmdr[o] = (radius - dr < 0.)      ?  1. : cosrad * cdr + sinrad * sdr;
+        }
+
+        let stk = new pstack(12 + 3 * omax);
+        for (let i=0; i<12; i++) {// insert the 12 base pixels in reverse order
+            stk.push(11-i,0);
+        }
+
+        while (stk.size()>0) {// as long as there are pixels on the stack
+            // pop current pixel number and order from the stack
+            let pix = stk.ptop();
+            let curro = stk.otop();
+            stk.pop();
+
+            let pos = this.bn[curro].pix2zphi(pix);
+            // cosine of angular distance between pixel center and disk center
+            let cangdist = this.cosdist_zphi(vptg.z, ptg.phi, pos.z, pos.phi);
+
+            if (cangdist > crpdr[curro]) {
+                let zone = (cangdist<cosrad) ? 1 : ((cangdist<=crmdr[curro]) ? 2 : 3);
+                this.check_pixel (curro, omax, zone, pixset, pix, stk, inclusive);
+            }
+        }
+        return pixset;
+    }
+
 } 
 
 export default Healpix;

@@ -7,7 +7,13 @@ import Hploc from './Hploc';
 "use strict";
 class Pointing{
 	
-	
+	/**
+	 * 
+	 * @param {*} vec3 Vec3.js
+	 * @param {*} mirror 
+	 * @param {*} in_theta radians
+	 * @param {*} in_phi radians
+	 */
 	constructor(vec3, mirror, in_theta = undefined, in_phi = undefined){
 		
 		if (vec3 != null){

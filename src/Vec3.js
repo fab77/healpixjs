@@ -3,6 +3,7 @@
  */
 
 import Hploc from './Hploc';
+import Pointing from './Pointing';
 
 "use strict";
 class Vec3{
@@ -12,9 +13,18 @@ class Vec3{
 	z;
 	
 	constructor(x, y, z){
-		this.x = x;
-		this.y = y;
-		this.z = z;
+
+		if (typeof x === Pointing) {
+			let sth = Hploc.sin(ptg.theta);
+			this.x=sth*Hploc.cos(ptg.phi);
+			this.y=sth*Hploc.sin(ptg.phi);
+			this.z=Hploc.cos(ptg.theta);
+		}else{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+		
 	}
 	getX(){
 		  return this.x;
