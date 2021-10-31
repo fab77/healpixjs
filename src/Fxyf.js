@@ -3,7 +3,7 @@
  */
 "use strict";
 
-import Hploc from './Hploc';
+import Hploc from './Hploc.js';
 
 class Fxyf{ 
 	constructor(x, y, f){

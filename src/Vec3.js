@@ -2,8 +2,8 @@
  * Partial porting to Javascript of Vec3.java from Healpix3.30  
  */
 
-import Hploc from './Hploc';
-import Pointing from './Pointing';
+import Hploc from './Hploc.js';
+import Pointing from './Pointing.js';
 
 "use strict";
 class Vec3{

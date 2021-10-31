@@ -1,23 +1,41 @@
 {
-  "name": "healpix",
+  "type": "module",
+  "name": "healpixjs",
+  "description": "Javascript porting of HEALPix Java and C library",
   "sideEffects": false,
   "version": "1.0.0",
-  "main": "healpix",
+  "main": "dist/healpixjs",
+  "typings": "dist/healpixjs",
   "private": true,
-  "scripts": {
-    "build": "webpack --config webpack.dev.js",
-    "prod": "webpack --config webpack.prod.js"
-  },
-  "module": "src/Healpix.js",
+  "module": "src/healpixjs",
   "keywords": [],
   "author": "Fabrizio Giordano (fab77)",
-  "license": "ISC",
+  "license": "GNU Affero General Public License v3.0",
+  "homepage": "https://github.com/fab77/healpixjs#readme",
+  "scripts": {
+    "build": "webpack --config webpack.dev-testing.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fab77/healpixjs.git"
+  },
   "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "webpack-cli": "^3.3.12"
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-proposal-private-methods": "^7.14.5",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/register": "^7.15.3",
+    "babel-loader": "^8.2.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^9.0.1",
+    "esm": "^3.2.25",
+    "request": "^2.88.2",
+    "terser-webpack-plugin": "^4.2.3",    
+    "webpack": "^5.60.0",
+    "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "webpack": "^5.37.1"
-  },
-  "description": "Javascript porting of HEALPix Java and C library"
+  }
+  
 }

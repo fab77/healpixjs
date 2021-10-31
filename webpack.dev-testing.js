@@ -1,27 +1,13 @@
-const path = require('path');
 
-// module.exports = [
-//   'source-map'
-// ].map(devtool => ({
-//   mode: 'development',
-//   entry: './src/Healpix.js',
-//   output: {
-//     path: path.resolve(__dirname, 'dist'),
-//     // filename: 'healpix.js',
-//     library: 'healpix',
-//   },
-//   devtool,
-//   optimization: {
-//     runtimeChunk: true,
-//     usedExports: true
-//   }
-// }));
+import webpack from 'webpack';
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const webpack = require('webpack'); //to access built-in plugins
-
-module.exports = {
+export default  {
   mode: 'development',
   devtool: 'source-map',
   entry: {
@@ -54,4 +40,20 @@ module.exports = {
       new webpack.ProgressPlugin(),
       new CleanWebpackPlugin()
   ],
+  resolve: {
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "stream": false,
+      "crypto": false,
+      "url": false,
+      "util": false,
+      "buffer": false
+    } 
+  },
 };

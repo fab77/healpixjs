@@ -6,8 +6,8 @@
 
 "use strict";
 
-import Vec3 from './Vec3';
-import Zphi from './Zphi';
+import Vec3 from './Vec3.js';
+import Zphi from './Zphi.js';
 
 class Hploc{
 	static PI4_A = 0.7853981554508209228515625;

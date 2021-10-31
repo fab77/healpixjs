@@ -1,7 +1,7 @@
 /**
  * 
  */
-import Hploc from './Hploc';
+import Hploc from './Hploc.js';
 
 
 "use strict";

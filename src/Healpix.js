@@ -3,16 +3,16 @@
  * Partial porting to Javascript of HealpixBase.java from Healpix3.30
  */
 
-import Fxyf from './Fxyf';
-import Hploc from './Hploc';
-import Xyf from './Xyf';
-import Vec3 from './Vec3';
-import Pointing from './Pointing';
-import CircleFinder from './CircleFinder';
-import Zphi from './Zphi';
-import pstack from './pstack';
-import Constants from './Constants';
-import RangeSet from './RangeSet';
+import Fxyf from './Fxyf.js';
+import Hploc from './Hploc.js';
+import Xyf from './Xyf.js';
+import Vec3 from './Vec3.js';
+import Pointing from './Pointing.js';
+import CircleFinder from './CircleFinder.js';
+import Zphi from './Zphi.js';
+import pstack from './pstack.js';
+import Constants from './Constants.js';
+import RangeSet from './RangeSet.js';
 
 
 class Healpix{
@@ -835,4 +835,11 @@ class Healpix{
 } 
 
 export default Healpix;
-export {Hploc, Vec3, Pointing};
+// export {default as Hploc} from './Hploc.js';
+// export {default as Vec3} from './Vec3.js';
+// export {default as Pointing} from './Pointing.js';
+export {
+    Hploc, 
+    Vec3,
+    Pointing
+};
