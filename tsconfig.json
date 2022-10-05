@@ -1,22 +1,24 @@
 {
   "compilerOptions": {
-    "typeRoots": [
-      "@types",
-      "./node_modules/@types"
-    ],
+    "moduleResolution": "node16", // 'node16' or 'nodenext' for Node.js’ ECMAScript Module Support
     "module": "es6",
-    "target": "es6",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "baseUrl": "./",
+    "target": "es6",  // Modern browsers support all ES6 features, so ES6 is a good choice. 
+    "lib": ["es6", "dom"],
+    "outDir": "lib-esm",
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "sourceMap": true,
     "declaration": true,
-    "esModuleInterop": true
+    "declarationMap": true
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
-    "test/**/*",
-    "src/**/*.spec.ts"
-  ]
+    "node_modules",
+    "**/*.spec.ts"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
 }

@@ -1,15 +1,15 @@
 "use strict";
 
-import { CircleFinder } from "./CircleFinder";
-import { Constants } from "./Constants";
-import { Fxyf } from "./Fxyf";
-import { Hploc } from "./Hploc";
-import { Pointing } from "./Pointing";
-import { pstack } from "./pstack";
-import { RangeSet } from "./RangeSet";
-import { Vec3 } from "./Vec3";
-import { Xyf } from "./Xyf";
-import { Zphi } from "./Zphi";
+import { CircleFinder } from "./CircleFinder.js";
+import { Constants } from "./Constants.js";
+import { Fxyf } from "./Fxyf.js";
+import { Hploc } from "./Hploc.js";
+import { Pointing } from "./Pointing.js";
+import { pstack } from "./pstack.js";
+import { RangeSet } from "./RangeSet.js";
+import { Vec3 } from "./Vec3.js";
+import { Xyf } from "./Xyf.js";
+import { Zphi } from "./Zphi.js";
 
 /**
  * Partial porting to Javascript of HealpixBase.java from Healpix3.30

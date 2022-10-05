@@ -2,8 +2,8 @@
  * Partial porting to Javascript of Fxyf.java from Healpix3.30
  */
 
-import {Hploc} from './Hploc';
-import {Vec3} from './Vec3';
+import {Hploc} from './Hploc.js';
+import {Vec3} from './Vec3.js';
 
 export class Fxyf{ 
 	

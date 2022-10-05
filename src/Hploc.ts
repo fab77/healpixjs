@@ -1,6 +1,6 @@
-import { Pointing } from './Pointing';
-import {Vec3} from './Vec3';
-import {Zphi} from './Zphi';
+import { Pointing } from './Pointing.js';
+import {Vec3} from './Vec3.js';
+import {Zphi} from './Zphi.js';
 
 export class Hploc{
 	static PI4_A = 0.7853981554508209228515625;

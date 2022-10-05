@@ -1,5 +1,5 @@
-import { Hploc } from './Hploc';
-import { Vec3 } from './Vec3';
+import { Hploc } from './Hploc.js';
+import { Vec3 } from './Vec3.js';
 
 
 
@@ -17,7 +17,7 @@ export class Pointing {
 	 * @param {*} in_theta radians
 	 * @param {*} in_phi radians
 	 */
-	constructor(vec3: Vec3, mirror?: boolean, in_theta?: number, in_phi?: number) {
+	constructor(vec3: Vec3 | null, mirror?: boolean, in_theta?: number, in_phi?: number) {
 
 		if (vec3 != null) {
 			this.theta = Hploc.atan2(Math.sqrt(vec3.x * vec3.x + vec3.y * vec3.y), vec3.z);
