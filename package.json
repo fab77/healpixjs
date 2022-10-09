@@ -1,7 +1,7 @@
 {
   "name": "healpixjs",
   "description": "Javascript porting of HEALPix Java and C library",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "HEALPix",
     "HEALPix Javascript library"
@@ -28,7 +28,8 @@
   "main": "./lib-esm/index.js",
   "types": "./lib-esm/index.d.ts",
   "files": [
-    "lib-esm/"
+    "lib-esm/",
+    "_bundles"
   ],
   "scripts": {
     "clean": "shx rm -rf _bundles lib-esm",
