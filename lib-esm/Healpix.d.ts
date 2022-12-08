@@ -49,6 +49,7 @@ export declare class Healpix {
      * @return {@link Vec3} for each point
      */
     getBoundariesWithStep(pix: number, step: number): Vec3[];
+    getPointsForXyfNoStep(x: number, y: number, face: number): Vec3[];
     getPointsForXyf(x: number, y: number, step: number, face: number): Vec3[];
     /** Returns the neighboring pixels of ipix.
     This method works in both RING and NEST schemes, but is

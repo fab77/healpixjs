@@ -49,8 +49,8 @@ export class Hploc{
 	
 	toVec3(): Vec3{
 		var st = this.have_sth ? this.sth : Math.sqrt((1.0-this.z)*(1.0+this.z));
-		var vector = new Vec3(st*Hploc.cos(this.phi),st*Hploc.sin(this.phi),this.z);
-	//	var vector = new Vec3(st*Math.cos(this.phi),st*Math.sin(this.phi),this.z);
+		// var vector = new Vec3(st*Hploc.cos(this.phi),st*Hploc.sin(this.phi),this.z);
+		var vector = new Vec3(st*Math.cos(this.phi),st*Math.sin(this.phi),this.z);
 		return vector;
 	};
 

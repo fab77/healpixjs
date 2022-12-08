@@ -356,7 +356,7 @@ class Healpix {
         let dc = 0.5 / this.nside;
         let xc = (xyf.ix + 0.5) / this.nside;
         let yc = (xyf.iy + 0.5) / this.nside;
-        let d = 1.0 / (this.nside);
+        // let d = 1.0/(this.nside);
         // console.log("------------------------");
         // console.log("xc, yc, dc "+xc+","+ yc+","+ dc);
         // console.log("xc+dc-d, yc+dc, xyf.face, d "+(xc+dc) +","+ (yc+dc)+","+
@@ -405,6 +405,19 @@ class Healpix {
         return points;
     }
     ;
+    getPointsForXyfNoStep(x, y, face) {
+        let nside = Math.pow(2, this.order);
+        let points = new Array();
+        let xyf = new _Xyf_js__WEBPACK_IMPORTED_MODULE_8__.Xyf(x, y, face);
+        let dc = 0.5 / nside;
+        let xc = (xyf.ix + 0.5) / nside;
+        let yc = (xyf.iy + 0.5) / nside;
+        points[0] = new _Fxyf_js__WEBPACK_IMPORTED_MODULE_2__.Fxyf(xc + dc, yc + dc, xyf.face).toVec3();
+        points[1] = new _Fxyf_js__WEBPACK_IMPORTED_MODULE_2__.Fxyf(xc - dc, yc + dc, xyf.face).toVec3();
+        points[2] = new _Fxyf_js__WEBPACK_IMPORTED_MODULE_2__.Fxyf(xc - dc, yc - dc, xyf.face).toVec3();
+        points[3] = new _Fxyf_js__WEBPACK_IMPORTED_MODULE_2__.Fxyf(xc + dc, yc - dc, xyf.face).toVec3();
+        return points;
+    }
     getPointsForXyf(x, y, step, face) {
         let nside = step * Math.pow(2, this.order);
         let points = new Array();
@@ -1012,8 +1025,8 @@ class Hploc {
     ;
     toVec3() {
         var st = this.have_sth ? this.sth : Math.sqrt((1.0 - this.z) * (1.0 + this.z));
-        var vector = new _Vec3_js__WEBPACK_IMPORTED_MODULE_0__.Vec3(st * Hploc.cos(this.phi), st * Hploc.sin(this.phi), this.z);
-        //	var vector = new Vec3(st*Math.cos(this.phi),st*Math.sin(this.phi),this.z);
+        // var vector = new Vec3(st*Hploc.cos(this.phi),st*Hploc.sin(this.phi),this.z);
+        var vector = new _Vec3_js__WEBPACK_IMPORTED_MODULE_0__.Vec3(st * Math.cos(this.phi), st * Math.sin(this.phi), this.z);
         return vector;
     }
     ;
