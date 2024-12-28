@@ -2,14 +2,14 @@
 
 Porting of HEALPix C++ library to Vanilla Javascript. It only supports NEST pixelation of the sky.
 
-# How to use the generated library available in Nodejs repository
+## How to use the generated library available in Nodejs repository
 Include the following dependency into package.json file in your project:
 ```
 "dependencies": {
         "healpixjs": "^1.0.3",
     },
 ```
-# Start using HEALPixjs in your project
+## Start using HEALPixjs in your project
 ```
 import { Healpix } from "healpixjs"
 import { Pointing } from "healpixjs"
