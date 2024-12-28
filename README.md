@@ -38,7 +38,7 @@ const vec3 = hpx.pix2vec(pixelTileNumber)
 git clone https://github.com/fab77/healpixjs.git
 ```
 
-- Move into the astrobrowser folder:
+- Move to the healpixjs folder:
 ```
 cd healpixjs
 ```
@@ -52,3 +52,21 @@ npm i
 ```
 npm run build:prod
 ```
+
+## Built With
+Node: v16.17.0
+webpack: 5.74.0
+
+## Contributing
+
+## Versioning
+
+## Authors
+* **Fabrizio Giordano**
+
+## License
+
+This project is licensed under the GPL License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+* Yago Ascasibar
