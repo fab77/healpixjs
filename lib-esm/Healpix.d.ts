@@ -79,6 +79,8 @@ export declare class Healpix {
      * @return Hploc
      */
     pix2loc(pix: number): Hploc;
+    za2vec(z: number, a: number): Vec3;
+    ang2vec(theta: number, phi: number): Vec3;
     vec2ang(v: Vec3): {
         theta: number;
         phi: number;

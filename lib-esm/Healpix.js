@@ -394,6 +394,16 @@ export class Healpix {
         return loc;
     }
     ;
+    za2vec(z, a) {
+        const sin_theta = Math.sqrt(1 - z * z);
+        const X = sin_theta * Math.cos(a);
+        const Y = sin_theta * Math.sin(a);
+        return new Vec3(X, Y, z);
+    }
+    ang2vec(theta, phi) {
+        const z = Math.cos(theta);
+        return this.za2vec(z, phi);
+    }
     vec2ang(v) {
         const { z, a } = this.vec2za(v.getX(), v.getY(), v.getZ());
         return { theta: Math.acos(z), phi: a };
