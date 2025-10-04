@@ -142,31 +142,13 @@ export class Healpix {
     getBoundaries(pix) {
         let points = new Array();
         let xyf = this.nest2xyf(pix);
-        // console.log("PIXEL: "+pix);
-        // console.log("XYF "+xyf.ix+" "+xyf.iy+" "+xyf.face);
         let dc = 0.5 / this.nside;
         let xc = (xyf.ix + 0.5) / this.nside;
         let yc = (xyf.iy + 0.5) / this.nside;
-        // let d = 1.0/(this.nside);
-        // console.log("------------------------");
-        // console.log("xc, yc, dc "+xc+","+ yc+","+ dc);
-        // console.log("xc+dc-d, yc+dc, xyf.face, d "+(xc+dc) +","+ (yc+dc)+","+
-        // xyf.face+","+ d);
         points[0] = new Fxyf(xc + dc, yc + dc, xyf.face).toVec3();
         points[1] = new Fxyf(xc - dc, yc + dc, xyf.face).toVec3();
         points[2] = new Fxyf(xc - dc, yc - dc, xyf.face).toVec3();
         points[3] = new Fxyf(xc + dc, yc - dc, xyf.face).toVec3();
-        // console.log("Points for npix: "+pix);
-        // console.log(points);
-        // if (pix > 750){
-        // console.log("pix: "+pix);
-        // console.log("dc: "+dc);
-        // console.log("xyf.ix: "+xyf.ix);
-        // console.log("xyf.iy: "+xyf.iy);
-        // console.log("xc: "+xc);
-        // console.log("yc: "+yc);
-        // console.log("d: "+d);
-        // }
         return points;
     }
     ;
@@ -197,12 +179,12 @@ export class Healpix {
     }
     ;
     getPointsForXyfNoStep(x, y, face) {
-        let nside = Math.pow(2, this.order);
+        // let nside = Math.pow(2, this.order);
         let points = new Array();
         let xyf = new Xyf(x, y, face);
-        let dc = 0.5 / nside;
-        let xc = (xyf.ix + 0.5) / nside;
-        let yc = (xyf.iy + 0.5) / nside;
+        let dc = 0.5 / this.nside;
+        let xc = (xyf.ix + 0.5) / this.nside;
+        let yc = (xyf.iy + 0.5) / this.nside;
         points[0] = new Fxyf(xc + dc, yc + dc, xyf.face).toVec3();
         points[1] = new Fxyf(xc - dc, yc + dc, xyf.face).toVec3();
         points[2] = new Fxyf(xc - dc, yc - dc, xyf.face).toVec3();
@@ -412,6 +394,21 @@ export class Healpix {
         return loc;
     }
     ;
+    vec2ang(v) {
+        const { z, a } = this.vec2za(v[0], v[1], v[2]);
+        return { theta: Math.acos(z), phi: a };
+    }
+    vec2za(X, Y, z) {
+        const r2 = X * X + Y * Y;
+        if (r2 == 0)
+            return { z: z < 0 ? -1 : 1, a: 0 };
+        else {
+            const PI2 = Math.PI / 2;
+            const a = (Math.atan2(Y, X) + PI2) % PI2;
+            z /= Math.sqrt(z * z + r2);
+            return { z, a };
+        }
+    }
     ang2pix(ptg, mirror) {
         return this.loc2pix(new Hploc(ptg));
     }

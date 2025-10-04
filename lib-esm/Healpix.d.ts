@@ -79,6 +79,14 @@ export declare class Healpix {
      * @return Hploc
      */
     pix2loc(pix: number): Hploc;
+    vec2ang(v: Vec3): {
+        theta: number;
+        phi: number;
+    };
+    vec2za(X: number, Y: number, z: number): {
+        z: number;
+        a: number;
+    };
     ang2pix(ptg: Pointing, mirror?: boolean): number;
     fmodulo(v1: number, v2: number): number;
     compress_bits(v: number): number;
