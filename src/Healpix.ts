@@ -463,7 +463,7 @@ export class Healpix {
     };
 
     vec2ang(v: Vec3) {
-        const { z, a } = this.vec2za(v[0], v[1], v[2])
+        const { z, a } = this.vec2za(v.getX(), v.getY(), v.getZ())
         return { theta: Math.acos(z), phi: a }
     }
 

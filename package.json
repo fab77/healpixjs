@@ -1,7 +1,7 @@
 {
   "name": "healpixjs",
   "description": "Javascript porting of HEALPix Java and C library",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "keywords": [
     "HEALPix",
     "HEALPix Javascript library"
