@@ -418,6 +418,11 @@ export class Healpix {
     }
 
 
+    pix2ang(pix: number, mirror?: boolean): Pointing { 
+        return this.pix2loc(pix).toPointing(mirror); 
+    }
+
+
     /**
      * @param pix long
      * @return Hploc
