@@ -353,6 +353,9 @@ export class Healpix {
     pix2zphi(pix) {
         return this.pix2loc(pix).toZphi();
     }
+    pix2ang(pix, mirror) {
+        return this.pix2loc(pix).toPointing(mirror);
+    }
     /**
      * @param pix long
      * @return Hploc

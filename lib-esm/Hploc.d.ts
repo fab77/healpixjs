@@ -15,6 +15,7 @@ export declare class Hploc {
     get phi(): number;
     set phi(phi: number);
     setSth(sth: number): void;
+    toPointing(mirror: boolean): Pointing;
     toVec3(): Vec3;
     toZphi(): Zphi;
     static sin(d: number): number;

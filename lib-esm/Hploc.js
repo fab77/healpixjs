@@ -1,3 +1,4 @@
+import { Pointing } from './Pointing.js';
 import { Vec3 } from './Vec3.js';
 import { Zphi } from './Zphi.js';
 export class Hploc {
@@ -33,6 +34,10 @@ export class Hploc {
         this.sth = sth;
     }
     ;
+    toPointing(mirror) {
+        const st = this.have_sth ? this.sth : Math.sqrt((1.0 - this.z) * (1.0 + this.z));
+        return new Pointing(null, false, Hploc.atan2(st, this.z), this._phi);
+    }
     toVec3() {
         var st = this.have_sth ? this.sth : Math.sqrt((1.0 - this.z) * (1.0 + this.z));
         var vector = new Vec3(st * Hploc.cos(this.phi), st * Hploc.sin(this.phi), this.z);

@@ -74,6 +74,7 @@ export declare class Healpix {
      @param pix the requested pixel number.
      @return the pixel's center coordinates. */
     pix2zphi(pix: number): Zphi;
+    pix2ang(pix: number, mirror?: boolean): Pointing;
     /**
      * @param pix long
      * @return Hploc
