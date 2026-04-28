@@ -2,6 +2,17 @@
 
 Porting of HEALPix C++ library to Vanilla Javascript. It only supports NEST pixelation of the sky.
 
+## Licensing
+
+healpixjs is distributed under a dual-license model:
+
+- a commercial license for proprietary or revenue-generating use
+- a separate non-commercial, source-available license for personal, academic,
+  research, evaluation, or other non-commercial use
+
+The non-commercial option is not an OSI open source license. See
+`LICENSE.md`, `LICENSE-COMMERCIAL.md`, and `LICENSE-NONCOMMERCIAL.md`.
+
 ## How to use the generated library available in Nodejs repository
 Include the following dependency into package.json file in your project:
 ```
@@ -63,10 +74,6 @@ webpack: 5.74.0
 
 ## Authors
 * **Fabrizio Giordano**
-
-## License
-
-This project is licensed under the GPL License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 * Yago Ascasibar
