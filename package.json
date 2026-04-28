@@ -1,13 +1,13 @@
 {
   "name": "healpixjs",
   "description": "Javascript porting of HEALPix Java and C library",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "keywords": [
     "HEALPix",
     "HEALPix Javascript library"
   ],
   "author": "Fabrizio Giordano (fab77)",
-  "license": "GNU Affero General Public License v3.0",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://github.com/fab77/healpixjs#readme",
   "repository": {
     "type": "git",
@@ -51,6 +51,6 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "jsfitsio": "^1.1.1"
+    "jsfitsio": "^2.0.0"
   }
 }
